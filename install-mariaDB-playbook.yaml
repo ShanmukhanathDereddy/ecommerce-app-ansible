@@ -1,0 +1,26 @@
+- 
+  name: install mariaDB
+  hosts: db_server
+  become: true
+  tasks:
+    - name: install mariaDB
+      yum:
+        name: mariadb-server
+        state: present
+
+    - name: start mariaDB
+      service:
+        name: mariadb
+        state: started
+
+    - name: enable mariaDB
+      service:
+        name: mariadb
+        enabled: true
+
+    - name: checking status of mariadb-server
+      service_facts:
+    - debug: var=ansible_facts.services["mariadb.service"]
+
+   
+

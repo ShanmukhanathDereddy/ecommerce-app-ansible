@@ -1,0 +1,14 @@
+- 
+  name: Ping test on web_server
+  hosts: web_server
+  tasks: 
+    - 
+      name: Ping test for web_server
+      ping:
+-
+  name: Ping test on db_server
+  hosts: db_server
+  tasks:
+    -
+      name: Ping test for db_server
+      ping:

@@ -1,0 +1,32 @@
+- 
+  name: install httpd
+  hosts: web_server
+  become: true
+  tasks:
+    - name: install apache and dependencies
+      yum:
+        name: httpd
+        state: present
+    
+    - name: configure httpd
+      lineinfile:
+        command: sed -i 's/index.html/index.php/g' /etc/httpd/conf/httpd.conf
+
+    - name: start httpd
+      service:
+        name: httpd
+        state: started
+
+    - name: enable httpd
+      service:
+        name: httpd
+        enabled: true
+
+    - name: checking status of apache
+      service_facts:
+    - debug: var=ansible_facts.services["httpd.service"]
+
+
+
+
+    

@@ -1,0 +1,26 @@
+- 
+  name: install php
+  hosts: web_server
+  become: true
+  tasks:
+    - name: install php and dependencies
+      yum:
+        name: php,php-mysqlnd
+        state: present
+
+    - name: install git 
+      yum:
+        name: git 
+        state: present
+
+    - name: cloning a git repository
+      git:
+        repo: https://github.com/kodekloudhub/learning-app-ecommerce.git
+        dest: /var/www/html
+        clone: yes
+
+    - name: setting DB Connection 
+      replace:
+        path: /var/www/html/index.php 
+        regexp: "172.20.1.101"
+        replace: "13.235.31.196"

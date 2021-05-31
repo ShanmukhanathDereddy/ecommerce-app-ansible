@@ -1,0 +1,38 @@
+- 
+  name: configure mariaDB
+  hosts: db_server
+  become: true
+  tasks:
+    - name: cofigure and creating database
+      mysql_db:
+        name: ecomdb
+        state: present
+
+    - name: Removes anonymous user account for db_server
+      mysql_user:
+        name: ''
+        host: 13.235.31.196
+        state: absent
+
+    - name: creating DB user
+      mysql_user:
+        host: 13.235.31.196
+        name: ecomuser
+        password: ecompassword
+        priv: '*.*:ALL,GRANT'
+        state: present
+      
+    - name: Flush Privileges
+      command: mysql -u root -e 'FLUSH PRIVILEGES'
+
+    - name: Copy database dump file
+      copy:
+        src: db-load-script.sql
+        dest: /tmp
+
+    - name: Restore database
+      mysql_db:
+        name: ecomdb
+        state: import
+        target: /tmp/db-load-script.sql
+

@@ -1,0 +1,39 @@
+-
+  name: install and configure firewalld
+  hosts: db_server
+  become: true
+  tasks:
+    - name: install firewalld
+      yum: 
+        name: firewalld
+        state: present
+
+    - name: start firewalld
+      service: 
+        name: firewalld
+        state: started
+
+    - name: enable firewalld
+      service:
+        name: firewalld
+        enabled: true
+
+    - name: checking status of firewalld
+      service_facts:
+    - debug: var=ansible_facts.services["firewalld.service"]
+
+    - name: adding firewall rules to allow mariadb port
+      firewalld:
+        state: enabled
+        permanent: true
+        zone: public
+        port: 3306/tcp
+
+    - name: reloading firewall service to save the added rules
+      command: firewall-cmd --reload
+
+    - name: list firewalld rules
+      command: firewall-cmd --list-all
+      register: list_rules
+    - debug: var=list_rules.stdout_lines
+
